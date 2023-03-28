@@ -1,37 +1,55 @@
 //your JS code here. If required.
-const reset = document.getElementById("reset_button");
-const change = document.getElementById("change_button");
 
-reset.addEventListener("click", resetGrid);
-change.addEventListener("click", changeColor);
+  const smallCups = document.querySelectorAll(".cup-small")
+const liters = document.getElementById("liters")
+const percentage = document.getElementById("percentage")
+const remained = document.getElementById("remained")
 
-function resetGrid() {
-  for (let i = 1; i <= 9; i++) {
-    const gridItem = document.getElementById(`${i}`);
-    gridItem.style.backgroundColor = "transparent";
-   // console.log(gridItem);
-  }
+smallCups.forEach((cup,index)=>{
+    cup.addEventListener("click",()=>highlightCups(index))
+})
+
+updateBigCup()
+
+function highlightCups(index){
+
+    if(index===(smallCups.length-1) && smallCups[index].classList.contains("full"))
+        index--;
+    else if(smallCups[index].classList.contains("full") && !smallCups[index].nextElementSibling.classList.contains("full")){
+        index--;
+    }
+    smallCups.forEach((cup,localIndex)=>{
+        if(localIndex<=index){
+            cup.classList.add("full")
+        }else{
+            cup.classList.remove("full")
+        }
+    })
+
+    updateBigCup()
 }
 
-function changeColor() {
-  const blockId = document.getElementById("block_id");
-  const colorId = document.getElementById("colour_id");
+function updateBigCup(){
 
-  if (!blockId.value) {
-    alert("Please enter block id");
-  }
-  if (!colorId.value) {
-    alert("Please enter colour id");
-  }
-  if (blockId.value>=9) {
-    alert("Invalid block Id");
-  }
-  
-  resetGrid();
-  console.log(blockId.value)
-  const gridItem = document.getElementById(`${blockId.value}`);
-  gridItem.style.backgroundColor = colorId.value;
+    const fullCups = document.querySelectorAll(".cup-small.full").length
 
-  blockId.value = "";
-  colorId.value = "";
+    const totalCups = smallCups.length
+
+    if(fullCups===0){
+        percentage.style.visibility = 'hidden'
+        percentage.style.height = 0
+    }else{
+        percentage.style.visibility = 'visible'
+        percentage.innerText = `${fullCups / totalCups * 100}%`
+        percentage.style.height = `${fullCups/totalCups*330}px`
+    }
+
+    if(fullCups===totalCups){
+        remained.style.visibility = 'hidden'
+        remained.style.height = 0
+    }else{
+        console.log("here")
+        remained.style.visibility = 'visible'
+        liters.innerText = `${2-(250*fullCups/1000)}L`
+    }
 }
